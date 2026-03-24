@@ -24,6 +24,11 @@ public class TodoService {
         Todo todo = new Todo();
 
         todo.setTaskName(dto.taskName());
+        if (dto.status() == null) {
+            todo.setStatus(TodoStatus.NOT_DONE);
+        } else {
+            todo.setStatus(dto.status());
+        }
 
         Todo savedTodo = repository.save(todo);
 
@@ -42,15 +47,26 @@ public class TodoService {
                 .orElseThrow(() -> new TodoNotFoundException("Todo not found"));
 
         todo.setTaskName(dto.taskName());
+        if (dto.status() == null) {
+            todo.setStatus(TodoStatus.NOT_DONE);
+        } else {
+            todo.setStatus(dto.status());
+        }
 
         Todo savedTodo = repository.save(todo);
 
         return toDto(savedTodo);
     }
 
-    public PageResponseDTO<TodoResponseDTO> findAll(Pageable pageable) {
+    public PageResponseDTO<TodoResponseDTO> findAll(TodoStatus status, Pageable pageable) {
 
-        Page<Todo> page = repository.findAll(pageable);
+        Page<Todo> page;
+
+        if (status != null) {
+            page = repository.findByStatus(status, pageable);
+        } else {
+            page = repository.findAll(pageable);
+        }
 
         List<TodoResponseDTO> todos = page
                 .stream()

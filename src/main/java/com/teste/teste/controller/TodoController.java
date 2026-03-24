@@ -3,6 +3,7 @@ package com.teste.teste.controller;
 import com.teste.teste.dto.PageResponseDTO;
 import com.teste.teste.dto.TodoRequestDTO;
 import com.teste.teste.dto.TodoResponseDTO;
+import com.teste.teste.entity.TodoStatus;
 import com.teste.teste.service.TodoService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -29,8 +30,8 @@ public class TodoController {
     }
 
     @GetMapping
-    public PageResponseDTO<TodoResponseDTO> findAll(Pageable pageable) {
-        return service.findAll(pageable);
+    public PageResponseDTO<TodoResponseDTO> findAll(@RequestParam(required = false) TodoStatus status, Pageable pageable) {
+        return service.findAll(status, pageable);
     }
 
     @PutMapping("/{id}")
